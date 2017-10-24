@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!-- Buefy CSS -->
+    <link rel="stylesheet" href="node_modules/buefy/lib/buefy.min.css">
+    <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script src="node_modules/moment/min/moment.min.js"></script>
+    <script src="node_modules/ckeditor/ckeditor.js"></script>
+    <!-- Buefy JavaScript -->
+    <script src="node_modules/vue/dist/vue.min.js"></script>
+    <script src="node_modules/buefy/lib/index.js"></script>
+
+    <!-- *** To use CDN *** -->
+    <!--<link rel="stylesheet" href="https://unpkg.com/buefy/lib/buefy.min.css">-->
+    <!--<script src="https://unpkg.com/buefy"></script>-->
+    <!--<script src="https://unpkg.com/vue"></script>-->
+    <script src="https://unpkg.com/vue-resource@1.3.4/dist/vue-resource.min.js"></script>
+    <link rel="stylesheet" href="blog.css">
+</head>
+
+<body>
+
+    <div id="app">
+        <header class="navbar is-dark">
+            <div class="container">
+                <div class="navbar-brand">
+                    <a href="#/" class="navbar-item" title="Buefy: lightweight UI components for Vue.js based on Bulma">
+                        <!--<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQW7ub6TzOBjpQPCVkSVbzSgCUGLfar-8o_-rQ5a6oqRJ28NrWQw" alt="Buefy">-->
+                        {{pageData.blogTitle}}
+                    </a>
+                    <a href="https://github.com/rafaelpimpa/buefy" target="_blank" title="Github" class="navbar-item">
+                        <span class="icon">
+                            <i class="fa fa-github"></i>
+                        </span>
+                    </a>
+                </div>
+
+                <div class="navbar-menu">
+                    <div class="navbar-end">
+                        <div class="navbar-item">
+                            <button class="button is-dark" @click="openPostModal()">
+                                <span class="icon"><i class="fa fa-edit"></i></span>
+                                <span>Criar Post</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+
+        <div class="container is-fluid">
+            <div v-if="pageData.blogPosts.length > 0">
+                <!-- START ARTICLE FEED -->
+                <section class="articles" v-for="(blog, index) in pageData.blogPosts">
+                    <div class="column is-8 is-offset-2">
+
+                        <!-- START ARTICLE -->
+                        <div class="card article">
+                            <div class="card-content">
+                                <div class="media">
+                                    <div class="media-center">
+                                        <img :src="blog.picture" class="author-image" alt="Placeholder image">
+                                    </div>
+                                    <div class="media-content has-text-centered">
+                                        <p class="title article-title">{{ blog.title }}</p>
+                                        <p class="subtitle is-6 article-subtitle">
+                                            <a href="#">{{ blog.author }}</a> on {{ moment(blog.created).format("LLLL") }}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="content article-body">
+                                    {{ blog.text }}
+                                </div>
+
+                                <button class="button is-dark"
+                                        @click="openCommentModal(blog)">
+                                    Ver comentários ({{ blog.comments.length }})
+                                </button>
+                                <button class="button is-dark"
+                                        @click="editPostModal(blog)">
+                                    Editar
+                                </button>
+                            </div>
+                        </div>
+                        <!-- END ARTICLE -->
+                        <!-- END ARTICLE FEED -->
+                    </div>
+                </section>
+            </div>
+            <div v-else></div>
+
+
+
+
+            <b-modal :active.sync="isShowCommentDialog">
+                <div v-if="selectedBlog.comments && selectedBlog.comments.length > 0" class="box content article-body">
+                    <div v-for="comment in blogComments">
+
+                        <article class="media">
+                            <div class="media-left">
+                                <figure class="image is-64x64" style="padding-top: 10px">
+                                    <img :src="comment.picture" alt="Placeholder image">
+                                </figure>
+                            </div>
+                            <div class="media-content" style="margin-top: 0">
+                                <div class="content">
+                                    <p>
+                                        <strong>{{ comment.author }}</strong>
+                                        <small>{{ comment.date }}</small>
+                                        <br>
+                                        {{ comment.text }}
+                                    </p>
+                                </div>
+                                <nav class="level is-mobile">
+                                    <div class="level-left">
+                                        <a class="level-item">
+                                            <span class="icon is-small"><i class="fa fa-reply"></i></span>
+                                        </a>
+                                        <a class="level-item">
+                                            <span class="icon is-small"><i class="fa fa-retweet"></i></span>
+                                        </a>
+                                        <a class="level-item">
+                                            <span class="icon is-small"><i class="fa fa-heart"></i></span>
+                                        </a>
+                                    </div>
+                                </nav>
+                            </div>
+                        </article>
+                    </div>
+                    <div class="box content article-body" style="margin: 0">
+                        <b-field label="Message">
+                            <b-input v-model="commentText" maxlength="200" type="textarea" id="comment-editor"></b-input>
+                        </b-field>
+                        <button @click="addComment()" class="button is-dark">Adicionar comentário</button>
+                    </div>
+                </div>
+                <div v-else class="box content article-body" style="margin: 0">
+                    <b-field label="Message">
+                        <b-input v-model="commentText" maxlength="200" type="textarea"></b-input>
+                    </b-field>
+                    <button @click="addComment()" class="button is-dark">Adicionar comentário</button>
+                </div>
+
+        </b-modal>
+
+
+        <b-modal :active.sync="isShowBlogPostDialog">
+            <div class="box content article-body" style="margin: 0">
+                <b-field label="Título">
+                    <b-input v-model="newBlogPost.title" placeholder="Título do Blog Post"></b-input>
+                </b-field>
+                <b-field label="Texto">
+                    <b-input v-model="newBlogPost.text" maxlength="1200" type="textarea"  id="editor1"></b-input>
+                </b-field>
+                <button @click="addPost()" class="button is-dark">Adicionar</button>
+            </div>
+        </b-modal>
+
+
+        </div>
+    </div>
+
+<script src="blog.js"></script>
+</body>
+</html>

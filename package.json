@@ -1,0 +1,18 @@
+{
+  "name": "static_blog",
+  "version": "1.0.0",
+  "description": "",
+  "main": "blog.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "buefy": "^0.5.4",
+    "bulma": "^0.6.0",
+    "ckeditor": "^4.7.3",
+    "moment": "^2.19.1",
+    "vue": "^2.5.2"
+  }
+}
