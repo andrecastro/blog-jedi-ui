@@ -23,16 +23,14 @@
 </head>
 
 <body>
-
     <div id="app">
         <header class="navbar is-dark">
             <div class="container">
                 <div class="navbar-brand">
-                    <a href="#/" class="navbar-item" title="Buefy: lightweight UI components for Vue.js based on Bulma">
-                        <!--<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQQW7ub6TzOBjpQPCVkSVbzSgCUGLfar-8o_-rQ5a6oqRJ28NrWQw" alt="Buefy">-->
-                        {{pageData.blogTitle}}
+                    <a href="#/" class="navbar-item" :title="pageData.blogTitle">
+                        <img src="http://sociedadejedi.com.br/wp-content/uploads/2015/08/logo_sociedade_jedi_alt3.png" :alt="pageData.blogTitle">
                     </a>
-                    <a href="https://github.com/rafaelpimpa/buefy" target="_blank" title="Github" class="navbar-item">
+                    <a href="https://github.com/andrecastro/blog-jedi-ui" target="_blank" title="Github" class="navbar-item">
                         <span class="icon">
                             <i class="fa fa-github"></i>
                         </span>
@@ -74,17 +72,10 @@
                                     </div>
                                 </div>
 
-                                <div class="content article-body">
-                                    {{ blog.text }}
-                                </div>
+                                <div class="content article-body" v-html="blog.text"></div>
 
-                                <button class="button is-dark"
-                                        @click="openCommentModal(blog)">
+                                <button class="button is-dark" @click="openCommentModal(blog)">
                                     Ver comentários ({{ blog.comments.length }})
-                                </button>
-                                <button class="button is-dark"
-                                        @click="editPostModal(blog)">
-                                    Editar
                                 </button>
                             </div>
                         </div>
@@ -94,9 +85,6 @@
                 </section>
             </div>
             <div v-else></div>
-
-
-
 
             <b-modal :active.sync="isShowCommentDialog">
                 <div v-if="selectedBlog.comments && selectedBlog.comments.length > 0" class="box content article-body">
@@ -146,7 +134,6 @@
                     </b-field>
                     <button @click="addComment()" class="button is-dark">Adicionar comentário</button>
                 </div>
-
         </b-modal>
 
 
@@ -156,7 +143,7 @@
                     <b-input v-model="newBlogPost.title" placeholder="Título do Blog Post"></b-input>
                 </b-field>
                 <b-field label="Texto">
-                    <b-input v-model="newBlogPost.text" maxlength="1200" type="textarea"  id="editor1"></b-input>
+                    <ckeditor v-model="newBlogPost.text" id="post-coment" ></ckeditor>
                 </b-field>
                 <button @click="addPost()" class="button is-dark">Adicionar</button>
             </div>
@@ -167,5 +154,6 @@
     </div>
 
 <script src="blog.js"></script>
+<script src="vue-ckeditor.js"></script>
 </body>
 </html>

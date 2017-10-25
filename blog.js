@@ -1,5 +1,3 @@
-Vue.use(Buefy.default)
-
 const jediImages = [
     "https://orig00.deviantart.net/d5b6/f/2007/234/6/2/jedi_boy_color_by_maldav.jpg",
     "https://i.pinimg.com/236x/b2/01/44/b201445ffac7b2b3562274a09e7ff28b--star-wars-jedi-star-wars-art.jpg",
@@ -13,7 +11,16 @@ const jediImages = [
     "https://pre00.deviantart.net/6901/th/pre/i/2013/045/b/e/dark_jedi_by_felipeborbs-d5uy26l.jpg"
 ]
 
+const index = Math.floor((Math.random() * 10))
+const currentAuthor = {
+    name: "Jedi " + index,
+    picture: jediImages[index]
+}
+
+Vue.use(Buefy.default)
+
 var homeListEndpoint = 'https://km9ndxetuf.execute-api.us-east-1.amazonaws.com/dev/posts'
+
 var App = new Vue({
     el: '#app',
     data: {
@@ -46,7 +53,6 @@ function loadData(endpoint) {
 }
 
 function addComment(blog) {
-    console.log(App.commentText);
     App.selectedBlog.comments.push({
         "author": "Comment Author",
         "picture": "http://www.radfaces.com/images/avatars/chucky.jpg",
@@ -61,32 +67,23 @@ function openCommentModal(blog) {
     App.selectedBlog = blog;
     App.commentText = '';
     App.isShowCommentDialog = true;
-    setTimeout(function () {
-        CKEDITOR.replace("comment-editor")
-    }, 10)
 }
 
 function addPost() {
-    console.log(App.commentText);
     var post = App.newBlogPost
-
-    var index = Math.floor((Math.random() * 10))
-
-    post.author = "Jedi " + index;
-    post.picture = jediImages[index]
-
+    post.author = currentAuthor.name;
+    post.picture = currentAuthor.picture
 
     App.$http.post('https://km9ndxetuf.execute-api.us-east-1.amazonaws.com/dev/posts', post).then(response => {
         App.pageData.blogPosts.push(response.data);
         App.isShowBlogPostDialog = false;
     }, response => {
         App.isShowBlogPostDialog = false;
-        alert("Deu pau")
+        alert("Erro ao salvar post")
     })
 }
 
 function openPostModal() {
-    console.log('*************');
     App.newBlogPost = {
         "title": "",
         "picture": "http://www.radfaces.com/images/avatars/chucky.jpg",
@@ -95,15 +92,7 @@ function openPostModal() {
         "comments": []
     };
     App.isShowBlogPostDialog = true;
-    setTimeout(function () {
-        CKEDITOR.replace("editor1")
-    }, 10)
-    console.log('---------');
 }
 
 
 loadData(homeListEndpoint);
-
-// CKEDITOR
-
-
