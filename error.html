@@ -1,157 +1,23 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-    <!-- Buefy CSS -->
-    <link rel="stylesheet" href="node_modules/buefy/lib/buefy.min.css">
-    <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+    <!-- Simple HttpErrorPages | MIT X11 License | https://github.com/AndiDittrich/HttpErrorPages -->
 
-    <!-- Buefy JavaScript -->
-    <script src="node_modules/vue/dist/vue.min.js"></script>
-    <script src="node_modules/buefy/lib/index.js"></script>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+    <title>We've got some trouble | 500 - Webservice currently unavailable</title>
 
-    <!-- *** To use CDN *** -->
-    <!--<link rel="stylesheet" href="https://unpkg.com/buefy/lib/buefy.min.css">-->
-    <!--<script src="https://unpkg.com/buefy"></script>-->
-    <!--<script src="https://unpkg.com/vue"></script>-->
-    <script src="https://unpkg.com/vue-resource@1.3.4/dist/vue-resource.min.js"></script>
-
-
-    <link rel="stylesheet" href="blog.css">
-
+    <style type="text/css">/*! normalize.css v5.0.0 | MIT License | github.com/necolas/normalize.css */html{font-family:sans-serif;line-height:1.15;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}body{margin:0}article,aside,footer,header,nav,section{display:block}h1{font-size:2em;margin:.67em 0}figcaption,figure,main{display:block}figure{margin:1em 40px}hr{box-sizing:content-box;height:0;overflow:visible}pre{font-family:monospace,monospace;font-size:1em}a{background-color:transparent;-webkit-text-decoration-skip:objects}a:active,a:hover{outline-width:0}abbr[title]{border-bottom:none;text-decoration:underline;text-decoration:underline dotted}b,strong{font-weight:inherit}b,strong{font-weight:bolder}code,kbd,samp{font-family:monospace,monospace;font-size:1em}dfn{font-style:italic}mark{background-color:#ff0;color:#000}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}audio,video{display:inline-block}audio:not([controls]){display:none;height:0}img{border-style:none}svg:not(:root){overflow:hidden}button,input,optgroup,select,textarea{font-family:sans-serif;font-size:100%;line-height:1.15;margin:0}button,input{overflow:visible}button,select{text-transform:none}[type=reset],[type=submit],button,html [type=button]{-webkit-appearance:button}[type=button]::-moz-focus-inner,[type=reset]::-moz-focus-inner,[type=submit]::-moz-focus-inner,button::-moz-focus-inner{border-style:none;padding:0}[type=button]:-moz-focusring,[type=reset]:-moz-focusring,[type=submit]:-moz-focusring,button:-moz-focusring{outline:1px dotted ButtonText}fieldset{border:1px solid silver;margin:0 2px;padding:.35em .625em .75em}legend{box-sizing:border-box;color:inherit;display:table;max-width:100%;padding:0;white-space:normal}progress{display:inline-block;vertical-align:baseline}textarea{overflow:auto}[type=checkbox],[type=radio]{box-sizing:border-box;padding:0}[type=number]::-webkit-inner-spin-button,[type=number]::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}[type=search]::-webkit-search-cancel-button,[type=search]::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}details,menu{display:block}summary{display:list-item}canvas{display:inline-block}template{display:none}[hidden]{display:none}/*! Simple HttpErrorPages | MIT X11 License | https://github.com/AndiDittrich/HttpErrorPages */body,html{width:100%;height:100%;background-color:#21232a}body{color:#fff;text-align:center;text-shadow:0 2px 4px rgba(0,0,0,.5);padding:0;min-height:100%;-webkit-box-shadow:inset 0 0 75pt rgba(0,0,0,.8);box-shadow:inset 0 0 75pt rgba(0,0,0,.8);display:table;font-family:"Open Sans",Arial,sans-serif}h1{font-family:inherit;font-weight:500;line-height:1.1;color:inherit;font-size:36px}h1 small{font-size:68%;font-weight:400;line-height:1;color:#777}a{text-decoration:none;color:#fff;font-size:inherit;border-bottom:dotted 1px #707070}.lead{color:silver;font-size:21px;line-height:1.4}.cover{display:table-cell;vertical-align:middle;padding:0 20px}footer{position:fixed;width:100%;height:40px;left:0;bottom:0;color:#a0a0a0;font-size:14px}</style>
 </head>
+
 <body>
-
-<div id="app" class="container">
-    <section class="hero is-danger is-bold is-small promo-block">
-        <div class="hero-body">
-            <div class="container">
-                <h1 class="title">
-                    <i class="fa fa-bell-o"></i>
-                    {{ pageData.blogTitle }}
-                </h1>
-                <h2 class="subtitle">
-                    {{ pageData.blogDescription }}
-                </h2>
-            </div>
-        </div>
-    </section>
-
-    <button class="button is-danger"
-            @click="openPostModal()">
-        Adicionar Blog Post </button>
-
-    <div v-if="pageData.blogPosts.length > 0">
-        <!-- START ARTICLE FEED -->
-        <section class="articles" v-for="(blog, index) in pageData.blogPosts">
-            <div class="column is-8 is-offset-2">
-
-                <!-- START ARTICLE -->
-                <div class="card article">
-                    <div class="card-content">
-                        <div class="media">
-                            <div class="media-center">
-                                <img :src="blog.picture" class="author-image" alt="Placeholder image">
-                            </div>
-                            <div class="media-content has-text-centered">
-                                <p class="title article-title">{{ blog.title }}</p>
-                                <p class="subtitle is-6 article-subtitle">
-                                    <a href="#">{{ blog.author }}</a> {{ blog.date }}
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="content article-body">
-                            {{ blog.text }}
-                        </div>
-
-                        <!--<div class="content article-body" v-if="blog.comments && blog.comments.length > 0" >-->
-                        <button class="button is-danger"
-                                @click="openCommentModal(blog)">
-                            Ver comentários ({{ blog.comments.length }})
-                        </button>
-                        <!--</div>-->
-                    </div>
-                </div>
-                <!-- END ARTICLE -->
-                <!-- END ARTICLE FEED -->
-            </div>
-        </section>
+    <div class="cover">
+        <h1>Webservice currently unavailable <small>Error 500</small></h1>
+        <p class="lead">An unexpected condition was encountered.<br />
+Our service team has been dispatched to bring it back online.</p>
     </div>
-    <div v-else>Sem dados :(</div>
-
-
-
-
-    <b-modal :active.sync="isShowCommentDialog">
-        <div v-if="selectedBlog.comments && selectedBlog.comments.length > 0" class="box content article-body">
-            <div v-for="comment in blogComments">
-
-                <article class="media">
-                    <div class="media-left">
-                        <figure class="image is-64x64" style="padding-top: 10px">
-                            <img :src="comment.picture" alt="Placeholder image">
-                        </figure>
-                    </div>
-                    <div class="media-content" style="margin-top: 0">
-                        <div class="content">
-                            <p>
-                                <strong>{{ comment.author }}</strong>
-                                <small>{{ comment.date }}</small>
-                                <br>
-                                {{ comment.text }}
-                            </p>
-                        </div>
-                        <nav class="level is-mobile">
-                            <div class="level-left">
-                                <a class="level-item">
-                                    <span class="icon is-small"><i class="fa fa-reply"></i></span>
-                                </a>
-                                <a class="level-item">
-                                    <span class="icon is-small"><i class="fa fa-retweet"></i></span>
-                                </a>
-                                <a class="level-item">
-                                    <span class="icon is-small"><i class="fa fa-heart"></i></span>
-                                </a>
-                            </div>
-                        </nav>
-                    </div>
-                </article>
-            </div>
-            <div class="box content article-body" style="margin: 0">
-                <b-field label="Message">
-                    <b-input v-model="commentText" maxlength="200" type="textarea"></b-input>
-                </b-field>
-                <button @click="addComment()" class="button is-danger">Adicionar comentário</button>
-            </div>
-        </div>
-        <div v-else class="box content article-body" style="margin: 0">
-            <b-field label="Message">
-                <b-input v-model="commentText" maxlength="200" type="textarea"></b-input>
-            </b-field>
-            <button @click="addComment()" class="button is-danger">Adicionar comentário</button>
-        </div>
-
-</b-modal>
-
-
-<b-modal :active.sync="isShowBlogPostDialog">
-    <div class="box content article-body" style="margin: 0">
-        <b-field label="Título">
-            <b-input v-model="newBlogPost.title" placeholder="Título do Blog Post"></b-input>
-        </b-field>
-        <b-field label="Texto">
-            <b-input v-model="newBlogPost.text" maxlength="1200" type="textarea"></b-input>
-        </b-field>
-        <button @click="addPost()" class="button is-danger">Adicionar</button>
-    </div>
-</b-modal>
-
-
-</div>
-
-
-<script src="blog.js"></script>
-</body>
+    
+    </body>
 </html>

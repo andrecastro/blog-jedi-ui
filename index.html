@@ -1,25 +1,14 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:v-on="http://www.w3.org/1999/xhtml">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Blog Jedi</title>
+
     <!-- Buefy CSS -->
     <link rel="stylesheet" href="node_modules/buefy/lib/buefy.min.css">
     <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-
-    <script src="node_modules/moment/min/moment.min.js"></script>
-    <script src="node_modules/ckeditor/ckeditor.js"></script>
-    <!-- Buefy JavaScript -->
-    <script src="node_modules/vue/dist/vue.min.js"></script>
-    <script src="node_modules/buefy/lib/index.js"></script>
-
-    <!-- *** To use CDN *** -->
-    <!--<link rel="stylesheet" href="https://unpkg.com/buefy/lib/buefy.min.css">-->
-    <!--<script src="https://unpkg.com/buefy"></script>-->
-    <!--<script src="https://unpkg.com/vue"></script>-->
-    <script src="https://unpkg.com/vue-resource@1.3.4/dist/vue-resource.min.js"></script>
-    <link rel="stylesheet" href="blog.css">
+    <link rel="stylesheet" href="assets/stylesheets/blog.css">
 </head>
 
 <body>
@@ -54,7 +43,7 @@
         <div class="container is-fluid">
             <div v-if="pageData.blogPosts.length > 0">
                 <!-- START ARTICLE FEED -->
-                <section class="articles" v-for="(blog, index) in pageData.blogPosts">
+                <section class="articles" v-for="(blog, idx) in pageData.blogPosts">
                     <div class="column is-8 is-offset-2">
 
                         <!-- START ARTICLE -->
@@ -76,6 +65,12 @@
 
                                 <button class="button is-dark" @click="openCommentModal(blog)">
                                     Ver comentários ({{ blog.comments.length }})
+                                </button>
+                                <button class="button is-dark" @click="openEditPost(blog, idx)">
+                                    Editar
+                                </button>
+                                <button class="button is-dark" @click="deletePost(blog, idx)">
+                                    Excluir
                                 </button>
                             </div>
                         </div>
@@ -145,15 +140,23 @@
                 <b-field label="Texto">
                     <ckeditor v-model="newBlogPost.text" id="post-coment" ></ckeditor>
                 </b-field>
-                <button @click="addPost()" class="button is-dark">Adicionar</button>
+                <button v-if="isNewPost" @click="addPost()" class="button is-dark">Salvar</button>
+                <button v-else @click="editPost()" class="button is-dark">Salvar alterações</button>
             </div>
         </b-modal>
 
-
         </div>
     </div>
-
-<script src="blog.js"></script>
-<script src="vue-ckeditor.js"></script>
 </body>
+
+<script src="node_modules/moment/min/moment.min.js"></script>
+<script src="node_modules/ckeditor/ckeditor.js"></script>
+<script src="node_modules/vue/dist/vue.min.js"></script>
+<script src="node_modules/buefy/lib/index.js"></script>
+<script src="node_modules/vue-resource/dist/vue-resource.js"></script>
+
+<script src="assets/javascripts/util.js"></script>
+<script src="assets/javascripts/vue-ckeditor.js"></script>
+<script src="assets/javascripts/blog.js"></script>
+
 </html>

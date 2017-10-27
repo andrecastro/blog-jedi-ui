@@ -9,17 +9,17 @@ const jediImages = [
     "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQON6cvgGTdLiuiIKVKswyO1B-zDdSWfqGUcDFZwpS19zGEbUu5",
     "https://img00.deviantart.net/8f37/i/2008/168/4/0/jedi_girl_komoshi_collaberate_by_scotee.jpg",
     "https://pre00.deviantart.net/6901/th/pre/i/2013/045/b/e/dark_jedi_by_felipeborbs-d5uy26l.jpg"
-]
+];
 
-const index = Math.floor((Math.random() * 10))
+const index = Math.floor((Math.random() * 10));
 const currentAuthor = {
     name: "Jedi " + index,
     picture: jediImages[index]
-}
+};
 
-Vue.use(Buefy.default)
+Vue.use(Buefy.default);
 
-var homeListEndpoint = 'https://km9ndxetuf.execute-api.us-east-1.amazonaws.com/dev/posts'
+var homeListEndpoint = 'https://km9ndxetuf.execute-api.us-east-1.amazonaws.com/dev/posts';
 
 var App = new Vue({
     el: '#app',
@@ -34,22 +34,70 @@ var App = new Vue({
         isShowBlogPostDialog: false,
         isShowCommentDialog: false,
         commentText: '',
+        isNewPost: true,
+        editPostIndex: 0,
         newBlogPost: {
             "title": "",
             "picture": "http://www.radfaces.com/images/avatars/chucky.jpg",
             "text": "",
             "comments": []
         }
+
     }
 });
 
-function loadData(endpoint) {
-    App.$http.get(endpoint).then(
-        response => {
-            console.log(response);
-            console.log(response.data);
-            App.pageData.blogPosts = response.data;
-        });
+// Post section
+function openEditPost(post, idx) {
+    App.newBlogPost = clone(post);
+    App.isNewPost = false;
+    App.editPostIndex = idx;
+    App.isShowBlogPostDialog = true;
+}
+
+function openPostModal() {
+    App.newBlogPost = {
+        "title": "",
+        "picture": "http://www.radfaces.com/images/avatars/chucky.jpg",
+        "author": "@d",
+        "text": "",
+        "comments": []
+    };
+    App.isNewPost = true;
+    App.isShowBlogPostDialog = true;
+}
+
+function editPost() {
+    App.pageData.blogPosts[App.editPostIndex] = App.newBlogPost;
+    App.isShowBlogPostDialog = false;
+}
+
+function deletePost(post, idx) {
+    if (confirm("Deseja realmente excluir o Blog Post")) {
+        App.pageData.blogPosts.splice(idx, 1);
+    }
+}
+
+function addPost() {
+    var post = App.newBlogPost;
+    post.author = currentAuthor.name;
+    post.picture = currentAuthor.picture;
+
+    App.$http.post('https://km9ndxetuf.execute-api.us-east-1.amazonaws.com/dev/posts', post).then(response => {
+        App.pageData.blogPosts.push(response.data);
+        App.isShowBlogPostDialog = false;
+    }, response => {
+        App.isShowBlogPostDialog = false;
+        alert("Erro ao salvar post")
+    })
+}
+
+// Comment section
+
+function openCommentModal(blog) {
+    App.blogComments = blog.comments;
+    App.selectedBlog = blog;
+    App.commentText = '';
+    App.isShowCommentDialog = true;
 }
 
 function addComment(blog) {
@@ -62,37 +110,13 @@ function addComment(blog) {
     App.commentText = '';
 }
 
-function openCommentModal(blog) {
-    App.blogComments = blog.comments;
-    App.selectedBlog = blog;
-    App.commentText = '';
-    App.isShowCommentDialog = true;
+function loadData(endpoint) {
+    App.$http.get(endpoint).then(
+        response => {
+            console.log(response);
+            console.log(response.data);
+            App.pageData.blogPosts = response.data;
+        });
 }
-
-function addPost() {
-    var post = App.newBlogPost
-    post.author = currentAuthor.name;
-    post.picture = currentAuthor.picture
-
-    App.$http.post('https://km9ndxetuf.execute-api.us-east-1.amazonaws.com/dev/posts', post).then(response => {
-        App.pageData.blogPosts.push(response.data);
-        App.isShowBlogPostDialog = false;
-    }, response => {
-        App.isShowBlogPostDialog = false;
-        alert("Erro ao salvar post")
-    })
-}
-
-function openPostModal() {
-    App.newBlogPost = {
-        "title": "",
-        "picture": "http://www.radfaces.com/images/avatars/chucky.jpg",
-        "author": "@d",
-        "text": "",
-        "comments": []
-    };
-    App.isShowBlogPostDialog = true;
-}
-
 
 loadData(homeListEndpoint);
