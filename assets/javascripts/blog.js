@@ -33,7 +33,9 @@ const App = new Vue({
         selectedBlog: {},
         isShowBlogPostDialog: false,
         isShowCommentDialog: false,
-        commentText: '',
+        currentComment: {
+
+        },
         isNewPost: true,
         editPostIndex: 0,
         currentPost: {},
@@ -112,15 +114,14 @@ function deletePost(post, idx) {
 function openCommentModal(blog) {
     App.blogComments = blog.comments;
     App.selectedBlog = blog;
-    App.commentText = '';
+    App.currentComment = clone(App.defaultPostAttributes);
     App.isShowCommentDialog = true;
 }
 
 function addComment(blog) {
-    let comment = clone(App.defaultCommentsAttributes);
-    comment.text = App.commentText = '';
-
+    var comment = clone(App.currentComment)
     App.selectedBlog.comments.push(comment);
+    App.currentComment.text = ''
 }
 
 function loadData(endpoint) {

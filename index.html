@@ -82,51 +82,30 @@
             <div v-else></div>
 
             <b-modal :active.sync="isShowCommentDialog">
-                <div v-if="selectedBlog.comments && selectedBlog.comments.length > 0" class="box content article-body">
-                    <div v-for="comment in blogComments">
+                <div class="box content">
+                    <div v-if="selectedBlog.comments && selectedBlog.comments.length > 0" class="article-body" style="margin: 5px 0px">
 
-                        <article class="media">
+                        <article class="media"  v-for="comment in blogComments">
                             <div class="media-left">
-                                <figure class="image is-64x64" style="padding-top: 10px">
+                                <figure class="image is-32x32" >
                                     <img :src="comment.picture" alt="Placeholder image">
                                 </figure>
                             </div>
-                            <div class="media-content" style="margin-top: 0">
-                                <div class="content">
+                            <div class="media-content" style="margin: 0px">
+                                <div class="content" >
                                     <p>
                                         <strong>{{ comment.author }}</strong>
                                         <small>{{ comment.date }}</small>
                                         <br>
-                                        {{ comment.text }}
+                                        <div v-html="comment.text"></div>
                                     </p>
                                 </div>
-                                <nav class="level is-mobile">
-                                    <div class="level-left">
-                                        <a class="level-item">
-                                            <span class="icon is-small"><i class="fa fa-reply"></i></span>
-                                        </a>
-                                        <a class="level-item">
-                                            <span class="icon is-small"><i class="fa fa-retweet"></i></span>
-                                        </a>
-                                        <a class="level-item">
-                                            <span class="icon is-small"><i class="fa fa-heart"></i></span>
-                                        </a>
-                                    </div>
-                                </nav>
                             </div>
                         </article>
                     </div>
-                    <div class="box content article-body" style="margin: 0">
-                        <b-field label="Message">
-                            <b-input v-model="commentText" maxlength="200" type="textarea" id="comment-editor"></b-input>
-                        </b-field>
-                        <button @click="addComment()" class="button is-dark">Adicionar comentário</button>
+                    <div class="article-body" style="margin: 5px 0px">
+                        <ckeditor v-model="currentComment.text" id="comment" ></ckeditor>
                     </div>
-                </div>
-                <div v-else class="box content article-body" style="margin: 0">
-                    <b-field label="Message">
-                        <b-input v-model="commentText" maxlength="200" type="textarea"></b-input>
-                    </b-field>
                     <button @click="addComment()" class="button is-dark">Adicionar comentário</button>
                 </div>
         </b-modal>
