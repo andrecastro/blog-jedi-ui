@@ -73,8 +73,12 @@ function savePost() {
         App.pageData.blogPosts.push(response.data);
         App.isShowBlogPostDialog = false;
     }, response => {
-        App.isShowBlogPostDialog = false;
-        alert("Erro ao salvar post")
+        if (response.status == 400) {
+            alert(response.data.message)
+        } else {
+            App.isShowBlogPostDialog = false;
+            alert("Erro inesperado ao criar post")
+        }
     })
 }
 
@@ -85,8 +89,12 @@ function updatePost() {
         App.pageData.blogPosts[App.editPostIndex] = response.data;
         App.isShowBlogPostDialog = false;
     }, response => {
-        App.isShowBlogPostDialog = false;
-        alert("Erro ao atualizar post")
+        if (response.status == 400) {
+            alert(response.data.message)
+        } else {
+            App.isShowBlogPostDialog = false;
+            alert("Erro inesperado ao atualizar post")
+        }
     })
 }
 
