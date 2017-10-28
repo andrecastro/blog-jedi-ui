@@ -17,11 +17,11 @@ const currentAuthor = {
     picture: jediImages[index]
 };
 
+const postsResourceEndpoint = 'https://km9ndxetuf.execute-api.us-east-1.amazonaws.com/dev/posts';
+
 Vue.use(Buefy.default);
 
-var homeListEndpoint = 'https://km9ndxetuf.execute-api.us-east-1.amazonaws.com/dev/posts';
-
-var App = new Vue({
+const App = new Vue({
     el: '#app',
     data: {
         pageData: {
@@ -36,53 +36,40 @@ var App = new Vue({
         commentText: '',
         isNewPost: true,
         editPostIndex: 0,
-        newBlogPost: {
+        currentPost: {},
+        defaultPostAttributes: {
             "title": "",
-            "picture": "http://www.radfaces.com/images/avatars/chucky.jpg",
+            "picture": currentAuthor.picture,
+            "author": currentAuthor.name,
             "text": "",
             "comments": []
+        },
+        defaultCommentsAttributes: {
+            "author": currentAuthor.name,
+            "picture": currentAuthor.picture,
+            "text": ""
         }
-
     }
 });
 
-// Post section
-function openEditPost(post, idx) {
-    App.newBlogPost = clone(post);
+// ----------------- Post section ------------------------
+function openCreatePostModal() {
+    App.currentPost = clone(App.defaultPostAttributes);
+    App.isNewPost = true;
+    App.isShowBlogPostDialog = true;
+}
+
+function openEditPostModal(post, idx) {
+    App.currentPost = clone(post);
     App.isNewPost = false;
     App.editPostIndex = idx;
     App.isShowBlogPostDialog = true;
 }
 
-function openPostModal() {
-    App.newBlogPost = {
-        "title": "",
-        "picture": "http://www.radfaces.com/images/avatars/chucky.jpg",
-        "author": "@d",
-        "text": "",
-        "comments": []
-    };
-    App.isNewPost = true;
-    App.isShowBlogPostDialog = true;
-}
+function savePost() {
+    let post = App.currentPost;
 
-function editPost() {
-    App.pageData.blogPosts[App.editPostIndex] = App.newBlogPost;
-    App.isShowBlogPostDialog = false;
-}
-
-function deletePost(post, idx) {
-    if (confirm("Deseja realmente excluir o Blog Post")) {
-        App.pageData.blogPosts.splice(idx, 1);
-    }
-}
-
-function addPost() {
-    var post = App.newBlogPost;
-    post.author = currentAuthor.name;
-    post.picture = currentAuthor.picture;
-
-    App.$http.post('https://km9ndxetuf.execute-api.us-east-1.amazonaws.com/dev/posts', post).then(response => {
+    App.$http.post(postsResourceEndpoint, post).then(response => {
         App.pageData.blogPosts.push(response.data);
         App.isShowBlogPostDialog = false;
     }, response => {
@@ -91,8 +78,29 @@ function addPost() {
     })
 }
 
-// Comment section
+function updatePost() {
+    let post = App.currentPost;
 
+    App.$http.put(postsResourceEndpoint, post).then(response => {
+        App.pageData.blogPosts[App.editPostIndex] = response.data;
+        App.isShowBlogPostDialog = false;
+    }, response => {
+        App.isShowBlogPostDialog = false;
+        alert("Erro ao atualizar post")
+    })
+}
+
+function deletePost(post, idx) {
+    if (confirm("Deseja realmente excluir o Blog Post")) {
+        App.$http.delete(postsResourceEndpoint, {body: post }).then(response => {
+            App.pageData.blogPosts.splice(idx, 1);
+        }, response => {
+            alert("Erro ao deletar post")
+        });
+    }
+}
+
+// ----------------- Comment section -----------------
 function openCommentModal(blog) {
     App.blogComments = blog.comments;
     App.selectedBlog = blog;
@@ -101,13 +109,10 @@ function openCommentModal(blog) {
 }
 
 function addComment(blog) {
-    App.selectedBlog.comments.push({
-        "author": "Comment Author",
-        "picture": "http://www.radfaces.com/images/avatars/chucky.jpg",
-        "date": " on October 7, 2017",
-        "text": App.commentText
-    });
-    App.commentText = '';
+    let comment = clone(App.defaultCommentsAttributes);
+    comment.text = App.commentText = '';
+
+    App.selectedBlog.comments.push(comment);
 }
 
 function loadData(endpoint) {
@@ -119,4 +124,4 @@ function loadData(endpoint) {
         });
 }
 
-loadData(homeListEndpoint);
+loadData(postsResourceEndpoint);

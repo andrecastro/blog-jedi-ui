@@ -29,7 +29,7 @@
                 <div class="navbar-menu">
                     <div class="navbar-end">
                         <div class="navbar-item">
-                            <button class="button is-dark" @click="openPostModal()">
+                            <button class="button is-dark" @click="openCreatePostModal()">
                                 <span class="icon"><i class="fa fa-edit"></i></span>
                                 <span>Criar Post</span>
                             </button>
@@ -66,7 +66,7 @@
                                 <button class="button is-dark" @click="openCommentModal(blog)">
                                     Ver comentários ({{ blog.comments.length }})
                                 </button>
-                                <button class="button is-dark" @click="openEditPost(blog, idx)">
+                                <button class="button is-dark" @click="openEditPostModal(blog, idx)">
                                     Editar
                                 </button>
                                 <button class="button is-dark" @click="deletePost(blog, idx)">
@@ -135,13 +135,13 @@
         <b-modal :active.sync="isShowBlogPostDialog">
             <div class="box content article-body" style="margin: 0">
                 <b-field label="Título">
-                    <b-input v-model="newBlogPost.title" placeholder="Título do Blog Post"></b-input>
+                    <b-input v-model="currentPost.title" placeholder="Título do Blog Post"></b-input>
                 </b-field>
                 <b-field label="Texto">
-                    <ckeditor v-model="newBlogPost.text" id="post-coment" ></ckeditor>
+                    <ckeditor v-model="currentPost.text" id="post-coment" ></ckeditor>
                 </b-field>
-                <button v-if="isNewPost" @click="addPost()" class="button is-dark">Salvar</button>
-                <button v-else @click="editPost()" class="button is-dark">Salvar alterações</button>
+                <button v-if="isNewPost" @click="savePost()" class="button is-dark">Salvar</button>
+                <button v-else @click="updatePost()" class="button is-dark">Salvar alterações</button>
             </div>
         </b-modal>
 
